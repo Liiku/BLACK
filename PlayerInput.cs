@@ -14,6 +14,7 @@ public class PlayerInput : MonoBehaviour
     public string keyB;
     public string keyC;
     public string keyD;
+    public string keyE;
 
     public string keyJRight;
     public string keyJLeft;
@@ -30,16 +31,18 @@ public class PlayerInput : MonoBehaviour
 
     //1.pressing signal
     public bool run;
+    public bool defense;
+    
     //2.trigger once signal
     public bool jump;
-    private bool lastJump;
-
     public bool Roll;
-    public bool lastRoll;
-
     public bool attack;
-    private bool lastAttack;
+    
     //3.double trigger
+    private Timer extTimer = new Timer();
+    public bool IsExtending = false;
+
+
 
     [Header("===== Others =====")]
     public bool inputEnabled = true; //Flag
@@ -82,12 +85,26 @@ public class PlayerInput : MonoBehaviour
         Dmag = Mathf.Sqrt((Dup2 * Dup2) + (Dright2* Dright2));
         DVec = Dright * transform.right + Dup * transform.forward;
 
+        //
+        
+        extTimer.Tick();
+        //print(extTimer.state);
+        if (extTimer.state == Timer.STATE.RUN)
+        {
+            IsExtending = true;
+        }
+        else
+        {
+            IsExtending = false;
+        }
+        
+        
         run = Input.GetKey(keyA);
 
-        //jump
-        bool newJump = Input.GetKey(keyB);
+        defense = Input.GetKey(keyE);
         
-        if (newJump != lastJump && newJump == true)
+        //jump
+        if (Input.GetKeyDown(keyB))
         {
             jump = true;
         }
@@ -95,25 +112,21 @@ public class PlayerInput : MonoBehaviour
         {
             jump = false;
         }
-        lastJump = newJump;
 
         //roll
-        bool newRoll = Input.GetKey(keyC);
-
-        if (newRoll != lastRoll && newRoll == true)
+        if (Input.GetKeyDown(keyC))
         {
+            StartTimer(extTimer, 0.25f);
             Roll = true;
+            print(IsExtending);
         }
         else
         {
             Roll = false;
         }
-        lastRoll = newRoll;
-        
+       
         //attack
-        bool newAttack = Input.GetKey(keyD);
-
-        if (newAttack != lastRoll && newAttack == true)
+        if (Input.GetKeyDown(keyD))
         {
             attack = true;
         }
@@ -121,7 +134,6 @@ public class PlayerInput : MonoBehaviour
         {
             attack = false;
         }
-        lastAttack = newAttack;
     }
 
 
@@ -135,5 +147,10 @@ public class PlayerInput : MonoBehaviour
         return output;
     }
 
+    private void StartTimer(Timer timer,float duration)
+    {
+        timer.duration = duration;
+        timer.Go();
+    }
 
 }

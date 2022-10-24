@@ -37,6 +37,9 @@ public class ActorController : MonoBehaviour
     {
         //print (pi.Dup);
         anim.SetFloat("forward", pi.Dmag * Mathf.Lerp(anim.GetFloat("forward"), ((pi.run) ? 2.0f : 1.0f), 0.5f));
+
+        anim.SetBool("defense", pi.defense);
+
         if (rigid.velocity.magnitude > 1.0f && pi.Roll)
         {
             anim.SetTrigger("roll");
